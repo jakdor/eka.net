@@ -4,14 +4,43 @@
 <h2>@ViewBag.Title.</h2>
 <h3>@ViewBag.Message</h3>
 
-<address>
-    One Microsoft Way<br />
-    Redmond, WA 98052-6399<br />
-    <abbr title="Phone">P:</abbr>
-    425.555.0100
-</address>
+<canvas id="canvas" width="300" height="300"></canvas>
 
-<address>
-    <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@example.com</a><br />
-    <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
-</address>
+@section scripts
+{
+
+    <script src="~/node_modules/fabric/dist/fabric.js"></script>
+
+    <script>
+        var initialiseCanvas = function() {
+
+            document.punCanvas = new fabric.Canvas('canvas');
+
+            document.punCanvas.isDrawingMode = true;
+
+            var pathCreated = function(e) {
+                $.connection.puns.server.sendPath(JSON.stringify(e.path.toJSON()));
+            };
+
+            document.punCanvas.on({
+                'path:created': pathCreated
+            });
+        }
+
+        $.connection.puns.client.drawPath = function (pathString) {
+            var path = JSON.parse(pathString);
+            fabric.util.enlivenObjects([path], function (objects) {
+                objects.forEach(function (o) {
+                    document.punCanvas.add(o);
+                });
+            });
+            
+        }
+
+        $.connection.hub.start().then(function() {
+            initialiseCanvas();
+        });
+
+
+    </script>
+}
