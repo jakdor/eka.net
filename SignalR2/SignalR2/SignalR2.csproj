@@ -291,6 +291,9 @@
     <Content Include="node_modules\fabric\README.md" />
     <Content Include="node_modules\fabric\testem.json" />
     <Content Include="node_modules\fabric\tests.mustache" />
+    <None Include="Properties\PublishProfiles\kalambury.mt2host.com - Web Deploy %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\kalambury.mt2host.com - Web Deploy %283%29.pubxml" />
+    <None Include="Properties\PublishProfiles\kalambury.mt2host.com - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

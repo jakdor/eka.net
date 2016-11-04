@@ -11,6 +11,7 @@ namespace SignalR2.Hubs
     [HubName("chat")]
     public class ChatHub : Hub<IClientHandler>
     {
+        [Authorize()]
         public void SendToAll(string msg)
         {
             Clients.Others.Hello(msg);
