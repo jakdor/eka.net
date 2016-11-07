@@ -30,7 +30,7 @@ namespace SignalR2.Hubs
                 if (UserName[i].Id == Context.ConnectionId)
                 {
                     UserName[i] = new IdName(Context.ConnectionId, name);
-                    if (GuestFlag)
+                    if (GuestFlag && i == UserName.Count - 1)
                     {
                         GuestCount--;
                         this.GuestFlag = false;
@@ -64,12 +64,11 @@ namespace SignalR2.Hubs
                 if(UserName[i].Id == Context.ConnectionId)
                 {
                     UserName.RemoveAt(i);
+                    if (GuestFlag && i == UserName.Count)
+                    {
+                        GuestCount--;
+                    }
                 }
-            }
-
-            if (GuestFlag && GuestCount > 0)
-            {
-                GuestCount--;
             }
 
             Clients.All.UpdateNameList(UserName);

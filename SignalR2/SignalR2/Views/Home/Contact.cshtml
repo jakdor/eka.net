@@ -34,16 +34,16 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.6/fabric.min.js"></script>
 
     <script>
-             
+                    
         var drawPath;
         var initialiseCanvas = function () {
 
             document.puneCanvas = new fabric.Canvas('canvas');
 
             document.puneCanvas.isDrawingMode = true;
-
+            
             var pathCreated = function (e) {
-                console.log(e.path);
+                //e.path.setColor('0f0');
                 $.connection.puns.server
                     .sendPath(JSON.stringify(e.path));
             };
