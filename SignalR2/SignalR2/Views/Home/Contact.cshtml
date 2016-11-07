@@ -4,16 +4,37 @@
 <h2>@ViewBag.Title.</h2>
 <h3>@ViewBag.Message</h3>
 
-<canvas id="canvas" width="500" height="300"
-        style="border: 1px gainsboro dashed"></canvas>
-<input type="button" class="btn btn-danger "
-       id="clear-btn" value="Clear" />
+<div style="width: 100%; overflow: hidden;">
+    <div style="width: 600px; float: left;">
+        <canvas id="canvas" width="500" height="300"
+                style="border: 1px gainsboro dashed"></canvas>
+        <br />
+        <input type="button" class="btn btn-danger "
+               id="clear-btn" value="Clear" />
+        <br /><br />
+        Active players:
+        <br />
+        <textarea id="playersBox" rows="15" cols="25"></textarea>
+    </div>
+
+    <div style="margin-left: 620px;">
+        Name:
+        <input type="text" id="msg-name" />
+        <br /><br />
+        <textarea id="ChatBox" rows="25" cols="50"></textarea>
+        <br /><br />
+        <input type="text" id="msg-input" />
+        <input type="button" class="btn-danger" id="send-btn" value="send" />
+    </div>
+</div>
+
 @section scripts
 {
 
     <script src="http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.6.6/fabric.min.js"></script>
 
     <script>
+             
         var drawPath;
         var initialiseCanvas = function () {
 
@@ -60,8 +81,70 @@
         }
 
         $.connection.puns.client.drawPath = drawPath;
+                  
+        //=======================
+        //chat section
+
         $.connection.hub.start();
 
+        var playerName = "";
+                
+        function addToTextArea(msg){
+            $("#ChatBox").val($("#ChatBox").val() + msg + "\n\n");
+        }
+
+        function getFormatedTime() {
+            var date = new Date();
+            var month = date.getMonth() + 1;
+            var output = date.getFullYear() + "." + month + "." + date.getDate() + " " + date.getHours() + ":";
+
+            if (date.getMinutes() < 10) {
+                output += "0" + date.getMinutes();
+            }
+            else {
+                output += date.getMinutes();
+            }
+
+            return output;
+        }
+
+        $.connection.chat.client.recived = function (msg) {
+            addToTextArea(msg);
+        }
+
+        $.connection.chat.client.getChatLog = function (chatLog) {
+            var input = "";
+            for(var i = 0; i < chatLog.length; ++i) {
+                input += chatLog[i] + "\n\n";
+            }
+            $("#ChatBox").val(input);
+        }
+
+        $.connection.chat.client.updateNameList = function (names) {
+            var input = "";
+            for (var i = 0; i < names.length; ++i) {
+                input += names[i].Name + "\n";
+            }
+            $("#playersBox").val(input);
+        }
+
+        $("#send-btn").click(function () {
+            var name = $("#msg-name").val();
+            if (name != "") {
+
+                if (name != playerName) {
+                    this.playerName = name;
+                    $.connection.chat.server.setName(name);
+                }
+
+                var msg = $("#msg-input").val();
+                if(msg != ""){
+                    addToTextArea("you: (" + getFormatedTime() + "): \n" + msg);
+                    $.connection.chat.server.sendToAll(name + " (" + getFormatedTime() + ") : \n" + msg);
+                    $("#msg-input").val("");
+                }
+            }
+        });
 
     </script>
 }

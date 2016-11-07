@@ -11,12 +11,18 @@ namespace SignalR2.Hubs
     [HubName("puns")]
     public class PunsHub : Hub<IPunsClientHandler>
     {
-        static List<string> Image =new List<string>();
+        static List<string> Image = new List<string>();
 
         public override Task OnConnected()
         {
             Clients.Caller.LoadImage(Image);
             return base.OnConnected();
+        }
+
+        public override Task OnReconnected()
+        {
+            Clients.Caller.LoadImage(Image);
+            return base.OnReconnected();
         }
 
         public void SendPath(string path)
@@ -30,7 +36,7 @@ namespace SignalR2.Hubs
             Image.Clear();
             Clients.All.Clear();
         }
-    }
+    } 
 
     public interface IPunsClientHandler
     {
